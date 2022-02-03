@@ -1,6 +1,6 @@
 module NEG_gate(
-	input wire [31:0] A,
-	output wire [31:0] Q);
+	input [31:0] A,
+	output [31:0] Q);
 	
 	wire [31:0] i; 
 	wire out;
