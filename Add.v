@@ -1,11 +1,10 @@
-module add(
+module Add(
 	output [31:0] RC,
 	output c_out,
 	input [31:0] RA, RB
-	input c_in
 );
 	wire c_in16;
-	Add_cla_16 M1(c_in16, RC[15:0], RA[15:0], RB[15:0], c_in);
+	Add_cla_16 M1(c_in16, RC[15:0], RA[15:0], RB[15:0], 0);
 	Add_cla_16 M2(c_out, RC[31:16], RA[31:16], RB[31:16], c_in16);
 	
 endmodule
@@ -34,11 +33,11 @@ module Add_cla_4(
 	
 	assign P = a^b;
 	assign G = a&b;
-	assign c[0] = cin;
+	assign c[0] = c_in;
 	assign c[1] = G[0] | (P[0]&c[0]);
-	assign c[2]= G[1] | (P[1]&G[0]) | P[1]&P[0]&c[0];
-	assign c[3]= G[2] | (P[2]&G[1]) | P[2]&P[1]&G[0] | P[2]&P[1]&P[0]&c[0];
-	assign cout = G[3] | (P[3]&G[2]) | P[3]&P[2]&G[1] | P[3]&P[2]&P[1]&G[0] | P[3]&P[2]&P[1]&P[0]&c[0];
+	assign c[2] = G[1] | (P[1]&G[0]) | P[1]&P[0]&c[0];
+	assign c[3] = G[2] | (P[2]&G[1]) | P[2]&P[1]&G[0] | P[2]&P[1]&P[0]&c[0];
+	assign c_out = G[3] | (P[3]&G[2]) | P[3]&P[2]&G[1] | P[3]&P[2]&P[1]&G[0] | P[3]&P[2]&P[1]&P[0]&c[0];
 	assign sum[3:0] =P^c;
 	
 endmodule
