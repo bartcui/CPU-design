@@ -5,5 +5,5 @@ module Sub(
 );
 	wire [31:0] RBneg;
 	NEG_gate(RB, RBneg);
-	Add(RC, c_out, RA, RBneg);
+	Add(RC, c_out, RA, RBneg, 0);
 endmodule

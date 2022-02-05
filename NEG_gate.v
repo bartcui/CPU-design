@@ -5,7 +5,7 @@ module NEG_gate(
 	wire [31:0] i; 
 	wire out;
 	NOT_gate not_gate(A, i);
-	Add add_op(Q, out, i, 32'd1);
+	Add add_op(Q, out, i, 32'd1, 0);
 	
 endmodule
 

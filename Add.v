@@ -1,10 +1,11 @@
 module Add(
 	output [31:0] RC,
 	output c_out,
-	input [31:0] RA, RB
+	input [31:0] RA, RB,
+	input c_in
 );
 	wire c_in16;
-	Add_cla_16 M1(c_in16, RC[15:0], RA[15:0], RB[15:0], 0);
+	Add_cla_16 M1(c_in16, RC[15:0], RA[15:0], RB[15:0], c_in);
 	Add_cla_16 M2(c_out, RC[31:16], RA[31:16], RB[31:16], c_in16);
 	
 endmodule
@@ -41,4 +42,5 @@ module Add_cla_4(
 	assign sum[3:0] =P^c;
 	
 endmodule
+
 
