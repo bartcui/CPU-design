@@ -1,4 +1,4 @@
-module SHIFT_right(
+module SHIFT_left(
 	input wire [31:0] in, shift,
 	output wire [31:0] out);
 

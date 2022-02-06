@@ -4,7 +4,7 @@ module AND_gate(
 
 	genvar i;
 	generate
-		for (i=0; i<32, i=i+1) begin : loop
+		for (i=0; i<32; i=i+1) begin : loop
 			assign Y[i] = ((A[i])&(B[i]));
 		end
 	endgenerate

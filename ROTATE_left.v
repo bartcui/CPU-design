@@ -1,7 +1,7 @@
 module ROTATE_left(
 	input wire [31:0] in, 
 	input wire [4:0] rotate,
-	output wire [31:0] out);
+	output reg [31:0] out);
 
 	always@(*) begin
 		case(rotate)
