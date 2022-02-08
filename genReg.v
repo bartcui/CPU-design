@@ -1,4 +1,4 @@
-module gen_reg(
+module genReg(
 	output reg [31:0] Q,
 	input [31:0] D,
 	input en, clr, clk
