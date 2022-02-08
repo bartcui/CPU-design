@@ -55,7 +55,7 @@ module Datapath(
 	
 	//Add the other operations needed for the datapath
 	Add add(ZAdd[31:0], ZAdd[32], Y, busOut, 0);
-	Sub sub(ZSub[31:0], ZSub[32], Y, busOut, 0);
+	Sub sub(ZSub[31:0], ZSub[32], Y, busOut);
 	Mult_booth_bit mult(ZMult[31:0], ZMult[63:32], Y, busOut);
 	NEG_gate neg(busOut, ZNeg);
 	NOT_gate nott(busOut, ZNot);
