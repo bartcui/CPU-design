@@ -23,6 +23,20 @@ module Datapath(
 	wire [32:0] ZAdd, ZSub;
 	wire [63:0] ZMult;
 	wire [31:0] ZNeg, ZNot;
+
+	wire [31:0] R2, R4, R5, PC, IR, ZHi, ZLo, Y, MAR, MDRo, HI, LO;
+	genReg R2ff(R2, busOut, R2in, Clear, Clock);
+	genReg R4ff(R4, busOut, R4in, Clear, Clock);
+	genReg R5ff(R5, busOut, R5in, Clear, Clock);
+	PCReg PCff(PC, busOut, PCin, Clear, Clock, IncPC);
+	genReg IRff(IR, busOut, IRin, Clear, Clock);
+	genReg ZHiff(ZHi, Z[31:0], Zin, Clear, Clock);
+	genReg ZLoff(ZLo, Z[63:32], Zin, Clear, Clock);
+	genReg Yff(Y, busOut, Yin, Clear, Clock);
+	genReg MARff(MAR, busOut, MARin, Clear, Clock);
+	MDR MDRreg(MDRo, busOut, Mdatain, MDRin, Clock, Clear, Read);
+	genReg HIff(HI, busOut, HIin, Clear, Clock);
+	genReg LOff(LO, busOut, LOin, Clear, Clock);
 	
 	always @(*) begin
 		if(ADD)
@@ -38,20 +52,6 @@ module Datapath(
 		//Have other ALU operations here
 		out[31:0] <= MDRo;
 	end
-
-	wire [31:0] R2, R4, R5, PC, IR, ZHi, ZLo, Y, MAR, MDRo, HI, LO;
-	genReg R2ff(R2, busOut, R2in, Clear, Clock);
-	genReg R4ff(R4, busOut, R4in, Clear, Clock);
-	genReg R5ff(R5, busOut, R5in, Clear, Clock);
-	PCReg PCff(PC, busOut, PCin, Clear, Clock, IncPC);
-	genReg IRff(IR, busOut, IRin, Clear, Clock);
-	genReg ZHiff(ZHi, Z[31:0], Zin, Clear, Clock);
-	genReg ZLoff(ZLo, Z[63:32], Zin, Clear, Clock);
-	genReg Yff(Y, busOut, Yin, Clear, Clock);
-	genReg MARff(MAR, busOut, MARin, Clear, Clock);
-	MDR MDRreg(MDRo, busOut, Mdatain, MDRin, Clock, Clear, Read);
-	genReg HIff(HI, busOut, HIin, Clear, Clock);
-	genReg LOff(LO, busOut, LOin, Clear, Clock);
 	
 	//Add the other operations needed for the datapath
 	Add add(ZAdd[31:0], ZAdd[32], Y, busOut, 0);
