@@ -1,19 +1,11 @@
 `timescale 1ns/10ps
-<<<<<<< HEAD
 module DIV_tb();
-=======
-module Div_tb();
->>>>>>> f5a96cb48b6958c118c077843f909546a57f2a1c
 	 reg  PCout, HIout, LOout, Zhiout, Zlowout, MDRout, R2out, R4out;
     reg  MARin, HIin, LOin, Zin, PCin, MDRin, IRin, Yin;    
     reg  IncPC, Read, R5in, R2in, R4in; 	//Add other signals for different operations (SUB, DIV, etc)
     reg  Clock, Clear; 
     reg  [31:0] Mdatain; 
-<<<<<<< HEAD
 	 wire [31:0] outp;
-=======
-	 wire signed [63:0] outp;
->>>>>>> f5a96cb48b6958c118c077843f909546a57f2a1c
 	 reg 	DIV;
 	 
 	 parameter   Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,  
@@ -26,11 +18,7 @@ module Div_tb();
 
 initial begin 
 	Clock = 0; 
-<<<<<<< HEAD
    forever #15 Clock = ~Clock;  
-=======
-   forever #10 Clock = ~Clock; 
->>>>>>> f5a96cb48b6958c118c077843f909546a57f2a1c
 end
 
 always @(posedge Clock)  // finite state machine; if clock rising-edge 
@@ -63,11 +51,7 @@ always @(Present_state)
 				Clear <= 0; Mdatain <= 32'd0; 
 			end
 			Reg_load1a: begin
-<<<<<<< HEAD
 				Mdatain <= 32'd34;
-=======
-				Mdatain <= 32'd12;
->>>>>>> f5a96cb48b6958c118c077843f909546a57f2a1c
 				Read = 0; MDRin = 0;
 				#10 Read <= 1; MDRin <= 1;
 			end
@@ -121,11 +105,7 @@ always @(Present_state)
 			T6: begin
 				#5 Zlowout <= 0; LOin <= 0;
 				#5 Zhiout <= 1; HIin <= 1;
-<<<<<<< HEAD
 				#25 Zhiout <= 0; HIin <= 0;
-=======
-				#15 Zhiout <= 0; HIin <= 0;
->>>>>>> f5a96cb48b6958c118c077843f909546a57f2a1c
 			end
 		endcase
 	end
