@@ -1,12 +1,13 @@
 `timescale 1ns / 10ps
-module And_tb; 	
-	reg	PCout, ZHighout, ZLowout, MDRout, R2out, R4out;
+module AND_tb; 	
+	reg	PCout, Zhiout, Zlowout, MDRout, R2out, R4out;
 	reg	MARin, PCin, MDRin, IRin, Yin, Zin;
+	reg 	R5in, R2in, R4in;
 	reg 	IncPC, Read;
 	reg	Clock, Clear;		
 	reg	[31:0] Mdatain;
-	reg 	[4:0] AND; 
-	reg 	R5in, R2in, R4in;
+	wire 	[31:0] outp;
+	reg	AND; 
 	
 	parameter	Default = 4'b0000, Reg_load1a= 4'b0001, Reg_load1b= 4'b0010,
 					Reg_load2a= 4'b0011, Reg_load2b = 4'b0100, Reg_load3a = 4'b0101,
@@ -20,24 +21,24 @@ Datapath DUT(outp, PCout, Zhiout, Zlowout, MDRout, R2out, R4out, 0, 0, MARin, Zi
 initial 
 	begin
 		Clock = 0;
-		forever #10 Clock = ~ Clock;
+		forever #15 Clock = ~Clock; 
 end
 
 always @(posedge Clock)//finite state machine; if clock rising-edge
 begin
 	case (Present_state)
-		Default			:	#40 Present_state = Reg_load1a;
-		Reg_load1a		:	#40 Present_state = Reg_load1b;
-		Reg_load1b		:	#40 Present_state = Reg_load2a;
-		Reg_load2a		:	#40 Present_state = Reg_load2b;
-		Reg_load2b		:	#40 Present_state = Reg_load3a;
-		Reg_load3a		:	#40 Present_state = Reg_load3b;
-		Reg_load3b		:	#40 Present_state = T0;
-		T0					:	#40 Present_state = T1;
-		T1					:	#40 Present_state = T2;
-		T2					:	#40 Present_state = T3;
-		T3					:	#40 Present_state = T4;
-		T4					:	#40 Present_state = T5;
+		Default			:	Present_state = Reg_load1a;
+		Reg_load1a		:	Present_state = Reg_load1b;
+		Reg_load1b		:	Present_state = Reg_load2a;
+		Reg_load2a		:	Present_state = Reg_load2b;
+		Reg_load2b		:	Present_state = Reg_load3a;
+		Reg_load3a		:	Present_state = Reg_load3b;
+		Reg_load3b		:	Present_state = T0;
+		T0					:	Present_state = T1;
+		T1					:	Present_state = T2;
+		T2					:	Present_state = T3;
+		T3					:	Present_state = T4;
+		T4					:	Present_state = T5;
 		endcase
 	end
 
@@ -45,7 +46,7 @@ always @(Present_state)
 	begin
 		case(Present_state)
 			Default: begin
-				PCout <= 0; ZHighout <= 0; ZLowout <= 0; MDRout <= 0; R2out <= 0; R4out <= 0;
+				PCout <= 0; Zhiout <= 0; Zlowout <= 0; MDRout <= 0; R2out <= 0; R4out <= 0;
 				MARin <= 0; Zin <= 0; PCin <= 0; MDRin <= 0; IRin <= 0; Yin <= 0; 
 				IncPC <= 0; Read <= 0; AND <= 0; R5in <= 0; R2in <= 0; R4in <= 0;
 				Clear <= 0; Mdatain <= 32'd0; 
@@ -84,10 +85,10 @@ always @(Present_state)
 			T1: begin
 				#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin <= 0;
 				Mdatain <= 32'h1A920000;
-				#5 ZLowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
+				#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 			T2: begin
-				#5 ZLowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0;
+				#5 Zlowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0;
 				#5 MDRout <= 1; IRin <= 1;
 			end
 			T3: begin
@@ -100,8 +101,8 @@ always @(Present_state)
 			end
 			T5: begin
 				#5 R4out <= 0; AND <= 0; Zin <= 0;
-				#5 ZLowout <= 1; R5in <= 1;
-				#15 ZLowout <= 0; R5in <= 0;
+				#5 Zlowout <= 1; R5in <= 1;
+				#25 Zlowout <= 0; R5in <= 0;
 			end
 		endcase
 	end

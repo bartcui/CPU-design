@@ -59,4 +59,3 @@ module Mult_booth_bit(
 	end	
 	
 endmodule
-				

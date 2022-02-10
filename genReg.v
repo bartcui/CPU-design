@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module genReg(
 	output reg [31:0] Q,
 	input [31:0] D,
@@ -7,8 +8,8 @@ module genReg(
 	always @(posedge clk)
 	begin
 		if(clr)
-			Q = 0;
+			Q[31:0] = 32'b0;
 		else if(en)
-			Q = D;
+			Q[31:0] = D[31:0];
 	end
 endmodule

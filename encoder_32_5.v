@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module encoder_32_5(
 	output reg [4:0] s,
 	input wire [31:0] in
@@ -6,8 +7,8 @@ module encoder_32_5(
 	always @(*)
 	begin
 		case(in)
-			32'h00000001 : s <= 5'd0;
-			32'h00000002 : s <= 5'd1;
+			32'h00000001 : s <= 5'd0;	//0001
+			32'h00000002 : s <= 5'd1;	//0010
 			32'h00000004 : s <= 5'd2;
 			32'h00000008 : s <= 5'd3;
 			32'h00000010 : s <= 5'd4;
@@ -30,7 +31,7 @@ module encoder_32_5(
 			32'h00200000 : s <= 5'd21;
 			32'h00400000 : s <= 5'd22;
 			32'h00800000 : s <= 5'd23;
-			default: encoderOutput <= 5'd31;
+			default: s <= 5'd31;
       endcase
    end
 endmodule

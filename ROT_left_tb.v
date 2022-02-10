@@ -1,12 +1,13 @@
 `timescale 1ns / 10ps
-module rotL_tb; 	
+module ROT_left_tb; 	
 	reg	PCout, Zhiout, Zlowout, MDRout, R2out, R4out;
 	reg	MARin, PCin, MDRin, IRin, Yin, Zin;
 	reg 	IncPC, Read;
 	reg 	R5in, R2in, R4in;
 	reg	Clock, Clear;
 	reg	[31:0] Mdatain;
-	reg 	[4:0] ROTL; 
+	wire 	[31:0] outp;
+	reg	ROTL; 
 
 	parameter	Default = 4'b0000, Reg_load1a= 4'b0001, Reg_load1b= 4'b0010,
 					Reg_load2a= 4'b0011, Reg_load2b = 4'b0100, Reg_load3a = 4'b0101,
@@ -14,29 +15,29 @@ module rotL_tb;
 	reg	[3:0] Present_state= Default;
 
 	Datapath DUT(outp, PCout, Zhiout, Zlowout, MDRout, R2out, R4out, 0, 0, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, IncPC, Read, R5in, R2in, R4in, Clock, Clear, Mdatain, 
-						0, 0, 0, 0, 0, 0, 0, 0, ROTL, 0, 0, 0);
+						0, 0, 0, 0, 0, 0, 0, 0, 0, ROTL, 0, 0);
 
 initial 
 	begin
 		Clock = 0;
-		forever #10 Clock = ~ Clock;
+		forever #15 Clock = ~Clock; 
 end
 
 always @(posedge Clock)//finite state machine; if clock rising-edge
 begin
 	case (Present_state)
-		Default			:	#40 Present_state = Reg_load1a;
-		Reg_load1a		:	#40 Present_state = Reg_load1b;
-		Reg_load1b		:	#40 Present_state = Reg_load2a;
-		Reg_load2a		:	#40 Present_state = Reg_load2b;
-		Reg_load2b		:	#40 Present_state = Reg_load3a;
-		Reg_load3a		:	#40 Present_state = Reg_load3b;
-		Reg_load3b		:	#40 Present_state = T0;
-		T0					:	#40 Present_state = T1;
-		T1					:	#40 Present_state = T2;
-		T2					:	#40 Present_state = T3;
-		T3					:	#40 Present_state = T4;
-		T4					:	#40 Present_state = T5;
+		Default			:	Present_state = Reg_load1a;
+		Reg_load1a		:	Present_state = Reg_load1b;
+		Reg_load1b		:	Present_state = Reg_load2a;
+		Reg_load2a		:	Present_state = Reg_load2b;
+		Reg_load2b		:	Present_state = Reg_load3a;
+		Reg_load3a		:	Present_state = Reg_load3b;
+		Reg_load3b		:	Present_state = T0;
+		T0					:	Present_state = T1;
+		T1					:	Present_state = T2;
+		T2					:	Present_state = T3;
+		T3					:	Present_state = T4;
+		T4					:	Present_state = T5;
 		endcase
 	end
 
@@ -50,7 +51,7 @@ begin
 				Clear <= 0; Mdatain <= 32'd0; 
 		end
 		Reg_load1a: begin
-				Mdatain <= 32'd12;
+				Mdatain <= 32'hAA220000;
 				Read = 0; MDRin = 0;
 				#10 Read <= 1; MDRin <= 1;
 			end
@@ -60,7 +61,7 @@ begin
 			end
 			Reg_load2a: begin
 				#5 MDRout <= 0; R2in <= 0;
-				Mdatain <= 32'd15;
+				Mdatain <= 32'd3;
 				#5 Read <= 1; MDRin <= 1;
 			end
 			Reg_load2b: begin
@@ -100,7 +101,7 @@ begin
 			T5: begin
 				#5 R4out <= 0; ROTL <= 0; Zin <= 0;
 				#5 Zlowout <= 1; R5in <= 1;
-				#15 Zlowout <= 0; R5in <= 0;
+				#25 Zlowout <= 0; R5in <= 0;
 			end
 		endcase
 	end

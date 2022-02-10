@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module Add(
 	output [31:0] RC,
 	output c_out,
@@ -42,5 +43,3 @@ module Add_cla_4(
 	assign sum[3:0] =P^c;
 	
 endmodule
-
-

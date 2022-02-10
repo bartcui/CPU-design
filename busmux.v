@@ -1,3 +1,4 @@
+`timescale 1ns/10ps
 module busmux(
 	output reg [31:0] out,
 	input wire [4:0] s,
@@ -29,31 +30,28 @@ module busmux(
 		begin
 			case(s)
 				5'd0 : out <= r0[31:0];
-				5'd2 : out <= r1[31:0];
-				5'd3 : out <= r2[31:0];
-				5'd4 : out <= r3[31:0];
-				5'd5 : out <= r4[31:0];
-				5'd0 : out <= r5[31:0];
-				5'd0 : out <= r6[31:0];
-				5'd0 : out <= r7[31:0];
-				5'd2 : out <= r8[31:0];
-				5'd3 : out <= r9[31:0];
-				5'd4 : out <= r10[31:0];
-				5'd5 : out <= r11[31:0];
-				5'd0 : out <= r12[31:0];
-				5'd0 : out <= r13[31:0];
-				5'd0 : out <= r14[31:0];
-				5'd2 : out <= r15[31:0];
-				5'd3 : out <= HI[31:0];
-				5'd4 : out <= LO[31:0];
-				5'd5 : out <= Zhigh[31:0];
-				5'd0 : out <= Zlow[31:0];
-				5'd0 : out <= PC[31:0];
-				5'd0 : out <= MDR[31:0];
-				default out <= 32'd0;
+				5'd1 : out <= r1[31:0];
+				5'd2 : out <= r2[31:0];
+				5'd3 : out <= r3[31:0];
+				5'd4 : out <= r4[31:0];
+				5'd5 : out <= r5[31:0];
+				5'd6 : out <= r6[31:0];
+				5'd7 : out <= r7[31:0];
+				5'd8 : out <= r8[31:0];
+				5'd9 : out <= r9[31:0];
+				5'd10: out <= r10[31:0];
+				5'd11 : out <= r11[31:0];
+				5'd12 : out <= r12[31:0];
+				5'd13 : out <= r13[31:0];
+				5'd14 : out <= r14[31:0];
+				5'd15 : out <= r15[31:0];
+				5'd16 : out <= HI[31:0];
+				5'd17 : out <= LO[31:0];
+				5'd18 : out <= Zhigh[31:0];
+				5'd19 : out <= Zlow[31:0];
+				5'd20 : out <= PC[31:0];
+				5'd21 : out <= MDR[31:0];
+				default: out <= 32'd0;
 			endcase
 		end
 endmodule
-
-				
-				

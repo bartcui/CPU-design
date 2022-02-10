@@ -5,7 +5,7 @@ module Sub_tb();
     reg  IncPC, Read, R5in, R2in, R4in; 	//Add other signals for different operations (SUB, DIV, etc)
     reg  Clock, Clear; 
     reg  [31:0] Mdatain; 
-	 wire signed [63:0] outp;
+	 wire [31:0] outp;
 	 reg 	SUB;
 	 
 	 parameter   Default = 4'b0000, Reg_load1a = 4'b0001, Reg_load1b = 4'b0010, Reg_load2a = 4'b0011,  
@@ -18,7 +18,7 @@ module Sub_tb();
 
 initial begin 
 	Clock = 0; 
-   forever #10 Clock = ~Clock; 
+   forever #15 Clock = ~Clock;  
 end
 
 always @(posedge Clock)  // finite state machine; if clock rising-edge 
@@ -100,7 +100,7 @@ always @(Present_state)
 			T5: begin
 				#5 R4out <= 0; SUB <= 0; Zin <= 0;
 				#5 Zlowout <= 1; R5in <= 1;
-				#15 Zlowout <= 0; R5in <= 0;
+				#25 Zlowout <= 0; R5in <= 0;
 			end
 		endcase
 	end
