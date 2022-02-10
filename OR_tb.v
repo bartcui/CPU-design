@@ -1,21 +1,22 @@
 `timescale 1ns / 10ps
-module And_tb; 	
-	reg	PCout, ZHighout, ZLowout, MDRout, R2out, R4out;
+module Or_tb; 	
+	reg	PCout, Zhiout, Zlowout, MDRout, R2out, R4out;
 	reg	MARin, PCin, MDRin, IRin, Yin, Zin;
 	reg 	IncPC, Read;
+	reg 	R5in, R2in, R4in;
 	reg	Clock, Clear;		
 	reg	[31:0] Mdatain;
-	reg 	[4:0] AND; 
-	reg 	R5in, R2in, R4in;
-	
-	parameter	Default = 4'b0000, Reg_load1a= 4'b0001, Reg_load1b= 4'b0010,
+	wire signed [63:0] outp;
+	reg 	OR; 
+
+parameter	Default = 4'b0000, Reg_load1a= 4'b0001, Reg_load1b= 4'b0010,
 					Reg_load2a= 4'b0011, Reg_load2b = 4'b0100, Reg_load3a = 4'b0101,
 					Reg_load3b = 4'b0110, T0= 4'b0111, T1= 4'b1000,T2= 4'b1001, T3= 4'b1010, T4= 4'b1011, T5= 4'b1100;
-	reg	[3:0] Present_state= Default;
+reg	[3:0] Present_state= Default;
 
-Datapath DUT(outp, PCout, Zhiout, Zlowout, MDRout, R2out, R4out, 0, 0, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, IncPC, Read, R5in, R2in, R4in, Clock, Clear, Mdatain, 
-						AND, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
+	 Datapath DUT(outp, PCout, Zhiout, Zlowout, MDRout, R2out, 0, 0, 0, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, IncPC, Read, R5in, R2in, 0, Clock, Clear, Mdatain, 
+						0, OR, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); 
 
 initial 
 	begin
@@ -42,15 +43,15 @@ begin
 	end
 
 always @(Present_state)
-	begin
-		case(Present_state)
-			Default: begin
-				PCout <= 0; ZHighout <= 0; ZLowout <= 0; MDRout <= 0; R2out <= 0; R4out <= 0;
+begin
+	case (Present_state)             
+		Default: begin
+				PCout <= 0; Zhiout <= 0; Zlowout <= 0; MDRout <= 0; R2out <= 0; R4out <= 0;
 				MARin <= 0; Zin <= 0; PCin <= 0; MDRin <= 0; IRin <= 0; Yin <= 0; 
-				IncPC <= 0; Read <= 0; AND <= 0; R5in <= 0; R2in <= 0; R4in <= 0;
+				IncPC <= 0; Read <= 0; OR <= 0; R5in <= 0; R2in <= 0; R4in <= 0;
 				Clear <= 0; Mdatain <= 32'd0; 
-			end
-			Reg_load1a: begin
+		end
+		Reg_load1a: begin
 				Mdatain <= 32'd12;
 				Read = 0; MDRin = 0;
 				#10 Read <= 1; MDRin <= 1;
@@ -84,10 +85,10 @@ always @(Present_state)
 			T1: begin
 				#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin <= 0;
 				Mdatain <= 32'h1A920000;
-				#5 ZLowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
+				#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 			T2: begin
-				#5 ZLowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0;
+				#5 Zlowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0;
 				#5 MDRout <= 1; IRin <= 1;
 			end
 			T3: begin
@@ -96,12 +97,12 @@ always @(Present_state)
 			end
 			T4: begin
 				#5 R2out <= 0; Yin <= 0;
-				#5 R4out <= 1; AND <= 1; Zin <= 1;
+				#5 R4out <= 1; OR <= 1; Zin <= 1;
 			end
 			T5: begin
-				#5 R4out <= 0; AND <= 0; Zin <= 0;
-				#5 ZLowout <= 1; R5in <= 1;
-				#15 ZLowout <= 0; R5in <= 0;
+				#5 R4out <= 0; OR <= 0; Zin <= 0;
+				#5 Zlowout <= 1; R5in <= 1;
+				#15 Zlowout <= 0; R5in <= 0;
 			end
 		endcase
 	end
