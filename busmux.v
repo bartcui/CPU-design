@@ -24,7 +24,9 @@ module busmux(
 	input [31:0] Zhigh,
 	input [31:0] Zlow,
 	input [31:0] PC,
-	input [31:0] MDR
+	input [31:0] MDR,
+	input [31:0] InPort,
+	input [31:0] C_sign_extended
 );
 	always @(*)
 		begin
@@ -51,6 +53,8 @@ module busmux(
 				5'd19 : out <= Zlow[31:0];
 				5'd20 : out <= PC[31:0];
 				5'd21 : out <= MDR[31:0];
+				5'd22 : out <= InPort[31:0];
+				5'd23 : out <= C_sign_extended[31:0];
 				default: out <= 32'd0;
 			endcase
 		end
