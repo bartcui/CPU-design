@@ -1,7 +1,7 @@
-module ZERO_REG(
-	input [31:0] D,
+module zeroReg(
 	output [31:0] Q,
-	input clr, clk, en, BAout
+	input [31:0] D,
+	input en, clr, clk, BAout
 );
 	wire [31:0] A;
 	genReg zeroReg(A, D, en, clr, clk);

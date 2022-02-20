@@ -1,5 +1,5 @@
 module decoder_4_16(
-	output reg [16:0] out,
+	output reg [15:0] out,
 	input [3:0] in
 );
 	always @(*)
