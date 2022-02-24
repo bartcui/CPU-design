@@ -2,12 +2,13 @@
 `timescale 1ns/10ps
 module Datapath_P2(
 	output reg [31:0] out,
-	input PCout, Zhiout, Zlowout, MDRout, HIout, LOout, 
-   input MARin, Zin, PCin, MDRin, IRin, Yin, HIin, LOin,    
+	input PCout, Zhiout, Zlowout, MDRout, HIout, LOout, InPortout,
+   input MARin, Zin, PCin, MDRin, IRin, Yin, HIin, LOin, OutPortin,   
    input IncPC, Read, Write,
-	input Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn,
+	input Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe,
    input Clock, Clear, 
-   input [31:0] Mdatain
+   input [31:0] Mdatain,
+	input [31:0] InputDev
 );
 	
 	wire [15:0] RegIn, RegOut;
@@ -25,7 +26,7 @@ module Datapath_P2(
 	reg [63:0] Z;
 
 	wire [31:0] R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15,
-					PC, IR, ZHi, ZLo, Y, MAR, MDRo, HI, LO, C_sign_extended;
+					PC, IR, ZHi, ZLo, Y, MAR, MDRo, HI, LO, InPorto, OutPorto, C_sign_extended;
 	
 	Sel_Enc RegSel(RegIn, RegOut, C_sign, Gra, Grb, Grc, Rin, Rout, BAout, IR);
 	
@@ -33,8 +34,12 @@ module Datapath_P2(
 	
 	CONFF_Logic CONFF(BranchMet, busOut, IR[22:19], CONIn);
 	
+	InPort IP(InPorto, InputDev, Clear, Clock, Strobe);
+	
+	OutPort OP(OutPorto, busOut, Clear, Clock, OutPortin);
+	
 	//initialize encoder input
-	always @(RegOut, HIout or LOout or Zhiout or Zlowout or PCout or MDRout) begin
+	always @(RegOut or HIout or LOout or Zhiout or Zlowout or PCout or MDRout or InPortout) begin
 		encIn[15:0] = RegOut;
 		encIn[16] = HIout;
 		encIn[17] = LOout;
@@ -42,7 +47,7 @@ module Datapath_P2(
 		encIn[19] = Zlowout;
 		encIn[20] = PCout;
 		encIn[21] = MDRout;
-		encIn[22] = 0;
+		encIn[22] = InPortout;
 		encIn[23] = Cout;
 		encIn[31:24] = 10'b0;
 	end
@@ -80,5 +85,5 @@ module Datapath_P2(
 	genReg Cff(C_sign_extended, C_sign, 1, Clear, Clock);
 	
 	busmux BUS(busOut, s, R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, 
-					HI, LO, ZHi, ZLo, PC, MDRo, 32'b0, C_sign_extended);
+					HI, LO, ZHi, ZLo, PC, MDRo, InPorto, C_sign_extended);
 endmodule
