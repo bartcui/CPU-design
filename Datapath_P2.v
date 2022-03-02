@@ -9,6 +9,7 @@ module Datapath_P2(
    input Clock, Clear, 
    input [31:0] Mdatain,
 	input [31:0] InputDev
+	
 );
 	
 	wire [15:0] RegIn, RegOut;
@@ -24,6 +25,10 @@ module Datapath_P2(
 	wire [31:0] busOut;
 	
 	reg [63:0] Z;
+	
+	wire [32:0] ZAdd;
+	
+	wire [31:0] ZAnd, ZOr;
 
 	wire [31:0] R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15,
 					PC, IR, ZHi, ZLo, Y, MAR, MDRo, HI, LO, InPorto, OutPorto, C_sign_extended;
@@ -86,4 +91,22 @@ module Datapath_P2(
 	
 	busmux BUS(busOut, s, R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, 
 					HI, LO, ZHi, ZLo, PC, MDRo, InPorto, C_sign_extended);
+	
+	always @(ADD or AND or OR) begin
+		#5;
+		if(AND)
+			Z = ZAnd;
+		else if(OR)
+			Z = ZOr;
+		else if(ADD)
+			Z = ZAdd;
+		//Have other ALU operations here
+		out[31:0] = Z[63:32];
+		#5
+		out[31:0] = Z[31:0];
+	end
+	
+	AND_gate andd(Y, busOut, ZAnd);
+	OR_gate orr(Y, busOut, ZOr);
+	Add add(ZAdd[31:0], ZAdd[32], Y, busOut, 1'b0);
 endmodule

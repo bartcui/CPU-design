@@ -49,7 +49,7 @@ always @(Present_state)
 			end
 		T1: begin 
 			#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-			Mdatain = 00000000100000000000000001010101;
+			Mdatain = 00010000100000000000000001011010;
 			#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 
@@ -76,10 +76,10 @@ always @(Present_state)
 		T6: begin
 			#5 Zlowout <= 0; MARin <= 0;
 			Mdatain = 00000000100000000000000001010101;
-			#5 Read <= 1; MDRin <= 1;
+			#5 Write <= 1; MDRin <= 1;
 			end
 		T7: begin
-			#5 Read <= 0; MDRin <= 0;
+			#5 Write <= 0; MDRin <= 0;
 			#5 MDRout <= 1; Gra <= 1; Rin <= 1;
 			#25 MDRout <= 0; Gra <= 0; Rin <= 0;
 			end
