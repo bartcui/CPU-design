@@ -1,13 +1,13 @@
 `timescale 1ns/10ps
 module ori_tb;
-	reg  PCout, Zhiout, Zlowout, MDRout, InPortout,
-   reg  MARin, Zin, PCin, MDRin, IRin, Yin, OutPortin,  
-   reg  IncPC, Read, Write,
-	reg  Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe,
+	reg  PCout, Zhiout, Zlowout, MDRout, InPortout;
+   reg  MARin, Zin, PCin, MDRin, IRin, Yin, OutPortin;  
+   reg  IncPC, Read, Write;
+	reg  Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe;
    reg  Clock, Clear; 
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
-	
+	reg  OR;
 			
 	parameter Default = 4'b0000, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100;
 	reg [3:0] Present_state = Default;

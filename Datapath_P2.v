@@ -8,8 +8,8 @@ module Datapath_P2(
 	input Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe,
    input Clock, Clear, 
    input [31:0] Mdatain,
-	input [31:0] InputDev
-	
+	input [31:0] InputDev,
+	input AND, OR, ADD
 );
 	
 	wire [15:0] RegIn, RegOut;

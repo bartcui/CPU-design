@@ -1,9 +1,9 @@
 `timescale 1ns/10ps
 module jr_tb;
-	reg  PCout, Zhiout, Zlowout, MDRout, InPortout,
-   reg  MARin, Zin, PCin, MDRin, IRin, Yin, OutPortin,  
-   reg  IncPC, Read, Write,
-	reg  Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe,
+	reg  PCout, Zhiout, Zlowout, MDRout, InPortout;
+   reg  MARin, Zin, PCin, MDRin, IRin, Yin, OutPortin;  
+   reg  IncPC, Read, Write;
+	reg  Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe;
    reg  Clock, Clear; 
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
