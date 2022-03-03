@@ -47,7 +47,7 @@ always @(Present_state)
 			end
 		T1: begin 
 			#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-			Mdatain = 01011001000011111111111111111011;
+			Mdatain = 01011001000011111111111111111011; //addi R2,R1,-5
 			#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 
