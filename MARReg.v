@@ -1,11 +1,11 @@
 `timescale 1ns/10ps
-module genReg(
+module MARReg(
 	output reg [31:0] Q,
 	input [31:0] D,
 	input en, clr, clk
 );
 	initial Q = 0;
-	always @(posedge clk or posedge en or posedge clr)
+	always @(posedge clk or posedge clr or posedge en)
 	begin
 		if(clr)
 			Q[31:0] = 32'b0;

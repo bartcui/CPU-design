@@ -4,7 +4,7 @@ module Datapath_P2(
 	output reg [31:0] out,
 	input PCout, Zhiout, Zlowout, MDRout, HIout, LOout, InPortout,
    input MARin, Zin, PCin, MDRin, IRin, Yin, HIin, LOin, OutPortin,   
-   input IncPC, Read, Write,
+   input IncPC, Read, Write, ReadIn,
 	input Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe,
    input Clock, Clear, 
    input [31:0] Mdatain,
@@ -15,9 +15,9 @@ module Datapath_P2(
 	wire [15:0] RegIn, RegOut;
 	wire [31:0] C_sign;
 	
-	wire BranchMet;
+	wire [31:0] RAMout;
 	
-	wire [31:0] MemOut;
+	wire BranchMet;
 	
 	reg [31:0] encIn;
 	wire [4:0] s;
@@ -35,7 +35,7 @@ module Datapath_P2(
 	
 	Sel_Enc RegSel(RegIn, RegOut, C_sign, Gra, Grb, Grc, Rin, Rout, BAout, IR);
 	
-	RAM ram(Read, Clock, 1, Write, 1, MAR[8:0], MDRo, MemOut);
+	RAM ram(MDRo, MAR[8:0], Write, Clock, RAMout);
 	
 	CONFF_Logic CONFF(BranchMet, busOut, IR[22:19], CONIn);
 	
@@ -44,7 +44,7 @@ module Datapath_P2(
 	OutPort OP(OutPorto, busOut, Clear, Clock, OutPortin);
 	
 	//initialize encoder input
-	always @(RegOut or HIout or LOout or Zhiout or Zlowout or PCout or MDRout or InPortout) begin
+	always @(RegOut or HIout or LOout or Zhiout or Zlowout or PCout or MDRout or InPortout or Cout) begin
 		encIn[15:0] = RegOut;
 		encIn[16] = HIout;
 		encIn[17] = LOout;
@@ -54,7 +54,7 @@ module Datapath_P2(
 		encIn[21] = MDRout;
 		encIn[22] = InPortout;
 		encIn[23] = Cout;
-		encIn[31:24] = 10'b0;
+		encIn[31:24] = 8'b0;
 	end
 	
 	
@@ -83,8 +83,8 @@ module Datapath_P2(
 	genReg ZHiff(ZHi, Z[63:32], Zin, Clear, Clock);
 	genReg ZLoff(ZLo, Z[31:0], Zin, Clear, Clock);
 	genReg Yff(Y, busOut, Yin, Clear, Clock);
-	genReg MARff(MAR, busOut, MARin, Clear, Clock);
-	MDR MDRreg(MDRo, busOut, Mdatain, MDRin, Clock, Clear, Read);
+	MARReg MARff(MAR, busOut, MARin, Clear, Clock);
+	MDR MDRreg(MDRo, busOut, Mdatain, RAMout, MDRin, Clock, Clear, Read, ReadIn);
 	genReg HIff(HI, busOut, HIin, Clear, Clock);
 	genReg LOff(LO, busOut, LOin, Clear, Clock);
 	genReg Cff(C_sign_extended, C_sign, 1, Clear, Clock);
@@ -92,18 +92,23 @@ module Datapath_P2(
 	busmux BUS(busOut, s, R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, 
 					HI, LO, ZHi, ZLo, PC, MDRo, InPorto, C_sign_extended);
 	
-	always @(ADD or AND or OR) begin
+	always @(ADD or AND or OR or R1) begin
 		#5;
-		if(AND)
+		if(AND) begin
 			Z = ZAnd;
-		else if(OR)
+			out[31:0] = Z[31:0];
+		end
+		else if(OR) begin
 			Z = ZOr;
-		else if(ADD)
+			out[31:0] = Z[31:0];
+		end
+		else if(ADD) begin
 			Z = ZAdd;
+			out[31:0] = Z[31:0];
+		end
+		else
+			#10 out = R1;
 		//Have other ALU operations here
-		out[31:0] = Z[63:32];
-		#5
-		out[31:0] = Z[31:0];
 	end
 	
 	AND_gate andd(Y, busOut, ZAnd);
