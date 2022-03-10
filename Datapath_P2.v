@@ -92,7 +92,7 @@ module Datapath_P2(
 	busmux BUS(busOut, s, R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, 
 					HI, LO, ZHi, ZLo, PC, MDRo, InPorto, C_sign_extended);
 	
-	always @(ADD or AND or OR or R1) begin
+	always @(ADD or AND or OR or R2) begin
 		#5;
 		if(AND) begin
 			Z = ZAnd;
@@ -107,7 +107,7 @@ module Datapath_P2(
 			out[31:0] = Z[31:0];
 		end
 		else
-			#10 out = R1;
+			#10 out = R2;
 		//Have other ALU operations here
 	end
 	

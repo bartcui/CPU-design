@@ -6,12 +6,13 @@ module in_tb;
 	reg  Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe;
    reg  Clock, Clear; 
    reg  [31:0] Mdatain;
+	reg  [31:0] InputDev;
 	wire [31:0] outp;
 	
 			
-	parameter Default = 4'b0000, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
+	parameter Default = 4'b0000, InPort_load = 4'b0001, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
 	reg [3:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain,); 
+	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, InputDev, 0, 0, 0); 
 	
 initial begin 
 	Clock = 0; 
@@ -21,7 +22,8 @@ end
 always @(posedge Clock)  // finite state machine; if clock rising-edge 
 	begin
 		case (Present_state)
-			Default			:	Present_state = T0;
+			Default			:	Present_state = InPort_load;
+			InPort_load		:	Present_state = T0;
 			T0					:	Present_state = T1;
 			T1					:	Present_state = T2;
 			T2					:	Present_state = T3;
@@ -38,14 +40,20 @@ always @(Present_state)
 				IncPC <= 0;  Read <= 0;  Write <= 0;  Gra <= 0;  Grb <= 0;  Grc <= 0;  Rin <= 0;  Rout <= 0;  BAout <= 0;  
 				Cout <= 0;  CONIn <= 0;  Strobe <= 0;  Clock <= 0;  Clear <= 0; 
 				Mdatain <= 32'd0;  
-			end	
+			end
+		
+		InPort_load: begin
+			InputDev <= 32'd24;
+			#5 Strobe <= 1;
+			end
 
 		T0: begin 
+			#5	Strobe <= 0;
 			#5 PCout <= 1; MARin <= 1; IncPC <= 1; Zin = 1;
 			end
 		T1: begin 
 			#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-			Mdatain = 101010001; //in R1
+			Mdatain = 32'b10101001000000000000000000000000; //in R2
 			#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 
@@ -56,8 +64,8 @@ always @(Present_state)
 
 		T3: begin
 			#5 MDRout <= 0; IRin <= 0;			
-			#5 Gra<=1;Rout<=1;InPortout<=1;
-			#25 Gra<=0;Rout<=0;InPortout<=0;
+			#5 Gra<=1;Rin<=1;InPortout<=1;
+			#25 Gra<=0;Rin<=0;InPortout<=0;
 			end
 		endcase
 	end
