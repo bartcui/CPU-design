@@ -2,6 +2,7 @@
 `timescale 1ns/10ps
 module Datapath_P2(
 	output reg [31:0] out,
+	output BranchMet,
 	input PCout, Zhiout, Zlowout, MDRout, HIout, LOout, InPortout,
    input MARin, Zin, PCin, MDRin, IRin, Yin, HIin, LOin, OutPortin,   
    input IncPC, Read, Write, ReadIn,
@@ -17,14 +18,16 @@ module Datapath_P2(
 	
 	wire [31:0] RAMout;
 	
-	wire BranchMet;
-	
 	reg [31:0] encIn;
 	wire [4:0] s;
 	
 	wire [31:0] busOut;
 	
 	reg [63:0] Z;
+	
+	initial begin
+		Z = 0;
+	end
 	
 	wire [32:0] ZAdd;
 	
@@ -96,15 +99,12 @@ module Datapath_P2(
 		#5;
 		if(AND) begin
 			Z = ZAnd;
-			out[31:0] = Z[31:0];
 		end
 		else if(OR) begin
 			Z = ZOr;
-			out[31:0] = Z[31:0];
 		end
 		else if(ADD) begin
 			Z = ZAdd;
-			out[31:0] = Z[31:0];
 		end
 		else
 			#10 out = R2;

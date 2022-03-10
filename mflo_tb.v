@@ -7,11 +7,11 @@ module mflo_tb;
    reg  Clock, Clear; 
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
-	
+	wire BranchMet;
 			
 	parameter Default = 4'b0000, LO_load1a = 4'b0001, LO_load1b = 4'b0010, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
 	reg [3:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, LOWout, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, LOWin, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain,); 
+	Datapath_P2 DUT(outp, BranchMet, PCout, Zhiout, Zlowout, MDRout, 0, LOWout, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, LOWin, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain,); 
 	
 initial begin 
 	Clock = 0; 

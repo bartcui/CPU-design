@@ -7,11 +7,11 @@ module mfhi_tb;
    reg  Clock, Clear; 
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
-	
+	wire BranchMet;
 			
-	parameter Default = 4'b0000, LO_load1a = 4'b0001, LO_load1b = 4'b0010, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
+	parameter Default = 4'b0000, HI_load1a = 4'b0001, HI_load1b = 4'b0010, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
 	reg [3:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, HIout, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, HIin, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain,);  
+	Datapath_P2 DUT(outp, BranchMet, PCout, Zhiout, Zlowout, MDRout, HIout, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, HIin, 0, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain,); 
 	
 initial begin 
 	Clock = 0; 
@@ -39,14 +39,14 @@ always @(Present_state)
 				MARin <= 0; Zin <= 0; PCin <= 0; MDRin <= 0; IRin <= 0; Yin <= 0; OutPortin <= 0;
 				IncPC <= 0;  Read <= 0;  Write <= 0;  Gra <= 0;  Grb <= 0;  Grc <= 0;  Rin <= 0;  Rout <= 0;  BAout <= 0;  
 				Cout <= 0;  CONIn <= 0;  Strobe <= 0;  Clock <= 0;  Clear <= 0; 
-				Mdatain <= 32'd0;  HIout <= 0; HIin <= 0;
+				Mdatain <= 32'd0; HIout <= 0; HIin <= 0;
 			end	
-
-		LO_load1a: begin
+		
+		HI_load1a: begin
 			Mdatain <= 32'd10;
 			#5 Read <= 1; MDRin <= 1;
 			end
-		LO_load1b: begin
+		HI_load1b: begin
 			#5 Read <= 0; MDRin <= 0;
 			#5 MDRout <= 1; HIin <= 1;
 			end
@@ -57,19 +57,17 @@ always @(Present_state)
 			end
 		T1: begin 
 			#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-			Mdatain = 101110010; //mfhi R2
+			Mdatain = 32'b10111001000000000000000000000000; //mflo R2
 			#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
-
 		T2: begin
 			#5 Zlowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0; 
 			#5 MDRout <= 1; IRin <= 1;		
 			end
-
 		T3: begin
 			#5 MDRout <= 0; IRin <= 0;			
-			#5 Gra<=1;Rout<=1;HIout<=1;
-			#25 Gra<=0;Rout<=0;HIout<=0;
+			#5 Gra<=1;Rin<=1;HIout<=1;
+			#25 Gra<=0;Rin<=0;HIout<=0;
 			end
 		endcase
 	end

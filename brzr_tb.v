@@ -8,10 +8,11 @@ module brzr_tb;
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
 	reg ADD;
+	wire BranchMet;
 			
 	parameter Default = 4'b0000, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010, T4 = 4'b1011, T5 = 4'b1100, T6 = 4'b1101;
 	reg [3:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain,); 
+	Datapath_P2 DUT(outp, BranchMet, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, 32'b0, 0, 0, ADD); 
 	
 initial begin 
 	Clock = 0; 
@@ -48,7 +49,7 @@ always @(Present_state)
 			end
 		T1: begin 
 			#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-			Mdatain = 10010001000000000000000000100011; //brzr  R2, 35
+			Mdatain = 32'b10010001000000000000000000100011; //brzr  R2, 35
 			#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 
@@ -74,7 +75,7 @@ always @(Present_state)
 
 		T6: begin
 			#5 Cout<=0; ADD <= 0;  Zin <= 0;
-			#5 Zlowout <= 1;PCin<=CONIn; //Zlowout, CON <- PCin??
+			#5 Zlowout <= 1;PCin <= BranchMet; //Zlowout, CON <- PCin??
 			#25 Zlowout <= 0; PCin <= 0;
 			end
 		

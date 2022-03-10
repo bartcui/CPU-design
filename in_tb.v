@@ -8,11 +8,12 @@ module in_tb;
    reg  [31:0] Mdatain;
 	reg  [31:0] InputDev;
 	wire [31:0] outp;
+	wire BranchMet;
 	
 			
 	parameter Default = 4'b0000, InPort_load = 4'b0001, T0 = 4'b0111, T1 = 4'b1000, T2 = 4'b1001, T3 = 4'b1010;
 	reg [3:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, InputDev, 0, 0, 0); 
+	Datapath_P2 DUT(outp, BranchMet, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, 0, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, InputDev, 0, 0, 0); 
 	
 initial begin 
 	Clock = 0; 
@@ -39,7 +40,7 @@ always @(Present_state)
 				MARin <= 0; Zin <= 0; PCin <= 0; MDRin <= 0; IRin <= 0; Yin <= 0; OutPortin <= 0;
 				IncPC <= 0;  Read <= 0;  Write <= 0;  Gra <= 0;  Grb <= 0;  Grc <= 0;  Rin <= 0;  Rout <= 0;  BAout <= 0;  
 				Cout <= 0;  CONIn <= 0;  Strobe <= 0;  Clock <= 0;  Clear <= 0; 
-				Mdatain <= 32'd0;  
+				Mdatain <= 32'd0;
 			end
 		
 		InPort_load: begin

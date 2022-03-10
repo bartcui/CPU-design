@@ -8,6 +8,7 @@ module ld_tb;
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
 	reg ADD;
+	wire BranchMet;
 	
 			
 	parameter Default = 5'b00000, RAM_load1a = 5'b00001, RAM_load1b = 5'b00010, RAM_load1c = 5'b00011, RAM_load1d = 5'b00100, Reg_load2a = 5'b00101,  
@@ -15,7 +16,7 @@ module ld_tb;
 				 T0 = 5'b01110, T1 = 5'b01111, T2 = 5'b10000, T3 = 5'b10001, T4 = 5'b10010, T5 = 5'b10011, T6 = 5'b10100, T7 = 5'b10101;
 				 
 	reg [4:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, ReadEn, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, 32'b0, 0, 0, ADD); 
+	Datapath_P2 DUT(outp, BranchMet, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, ReadEn, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, 32'b0, 0, 0, ADD); 
 	
 initial begin 
 	Clock = 0; 
@@ -70,7 +71,7 @@ always @(Present_state)
 			end
 		RAM_load1c: begin
 			#5 MDRout <= 0; MARin <= 0;
-			Mdatain <= 32'd15;
+			Mdatain <= 32'd34;
 			#5 Read <= 1; MDRin <= 1;
 			end
 		RAM_load1d: begin
