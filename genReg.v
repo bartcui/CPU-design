@@ -5,7 +5,7 @@ module genReg(
 	input en, clr, clk
 );
 	initial Q = 0;
-	always @(posedge clk or posedge en or posedge clr)
+	always @(posedge clk)
 	begin
 		if(clr)
 			Q[31:0] = 32'b0;

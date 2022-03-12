@@ -8,13 +8,14 @@ module st_tb;
    reg  [31:0] Mdatain;
 	wire [31:0] outp;
 	reg ADD;
+	wire BranchMet;
 			
 	parameter Default = 5'b00000, RAM_load1a = 5'b00001, RAM_load1b = 5'b00010, RAM_load1c = 5'b00011, RAM_load1d = 5'b00100, Reg_load2a = 5'b00101,  
              Reg_load2b = 5'b00110, Reg_load2c = 5'b00111, Reg_load2d = 5'b01001, Reg_load3a = 5'b01010, Reg_load3b = 5'b01011, Reg_load3c = 5'b01100, Reg_load3d = 5'b01101,
 				 T0 = 5'b01110, T1 = 5'b01111, T2 = 5'b10000, T3 = 5'b10001, T4 = 5'b10010, T5 = 5'b10011, T6 = 5'b10100, T7 = 5'b10101;
 				 
 	reg [4:0] Present_state = Default;
-	Datapath_P2 DUT(outp, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, ReadEn, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, 32'b0, 0, 0, ADD); 
+	Datapath_P2 DUT(outp, BranchMet, PCout, Zhiout, Zlowout, MDRout, 0, 0, InPortout, MARin, Zin, PCin, MDRin, IRin, Yin, 0, 0, OutPortin, IncPC, Read, Write, ReadEn, Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe, Clock, Clear, Mdatain, 32'b0, 0, 0, ADD); 
 		
 initial begin 
 	Clock = 0; 
@@ -50,8 +51,6 @@ end
 always @(Present_state) 
 	begin
 	#10 
-		begin
-	#10 
 		case (Present_state) 
 			Default: begin 
 				PCout <= 0; Zhiout <= 0; Zlowout <= 0; MDRout <= 0; InPortout <= 0;
@@ -76,11 +75,11 @@ always @(Present_state)
 			end
 		RAM_load1d: begin
 			#5 Read <= 0; MDRin <= 0;
-			#5 MDRout <= 1; Write <= 1;
+			#5 Write <= 1;
 			end
 		
 		Reg_load2a: begin
-			#5 MDRout <= 0; Write <= 0;
+			#5 Write <= 0;
 			Mdatain <= 32'b00000000100000000000000000000000;
 			#5 Read <= 1; MDRin <= 1;
 			end
@@ -116,13 +115,14 @@ always @(Present_state)
 			#5 Read <= 0; MDRin <= 0;
 			#5 MDRout <= 1; Gra <= 1; Rin <= 1;
 			end
+			
 		T0: begin 
 			#5 MDRout <= 0; Gra <= 0; Rin <= 0; 
 			#5 PCout <= 1; MARin <= 1; IncPC <= 1; Zin = 1;
 			end
 		T1: begin 
 			#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-			Mdatain = 00010000100000000000000001011010;
+			Mdatain = 32'b00010000100000000000000001010101;
 			#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
 			end
 
@@ -148,13 +148,12 @@ always @(Present_state)
 
 		T6: begin
 			#5 Zlowout <= 0; MARin <= 0;
-			Mdatain = 00000000100000000000000001010101;
-			#5 Write <= 1; MDRin <= 1;
+			#5 MDRin <= 1; Gra <= 1; Rout <= 1;
 			end
 		T7: begin
-			#5 Write <= 0; MDRin <= 0;
-			#5 MDRout <= 1; Gra <= 1; Rin <= 1;
-			#25 MDRout <= 0; Gra <= 0; Rin <= 0;
+			#5 MDRin <= 0; Gra <= 0; Rout <= 0;
+			#5 Write <= 1;
+			#25 Write <= 0;
 			end
 		endcase
 	end

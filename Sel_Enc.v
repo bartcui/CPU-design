@@ -14,7 +14,10 @@ module Sel_Enc(
 		if(Gra)
 			regSel = IR[26:23];
 		else if(Grb)
-			regSel = IR[22:19];
+			if(IR[31:27] == 5'b10100)
+				regSel = 4'b1111;
+			else
+				regSel = IR[22:19];
 		else if(Grc)
 			regSel = IR[18:15];
 			

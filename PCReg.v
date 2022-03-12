@@ -8,7 +8,7 @@ module PCReg(
 	always @(posedge clk)
 	begin
 		if(IncPC)
-			Q = Q + 4;
+			Q = Q + 1;
 		else if(clr)
 			Q = 0;
 		else if(br)

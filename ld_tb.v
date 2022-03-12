@@ -76,11 +76,11 @@ always @(Present_state)
 			end
 		RAM_load1d: begin
 			#5 Read <= 0; MDRin <= 0;
-			#5 MDRout <= 1; Write <= 1;
+			#5 Write <= 1;
 			end
 		
 		Reg_load2a: begin
-			#5 MDRout <= 0; Write <= 0;
+			#5 Write <= 0;
 			Mdatain <= 32'b00000000100000000000000000000000;
 			#5 Read <= 1; MDRin <= 1;
 			end
