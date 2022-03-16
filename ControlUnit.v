@@ -75,6 +75,7 @@ module ControlUnit(
 				ld4			:	Present_state = ld5;
 				ld5			:	Present_state = ld6;
 				ld6			:	Present_state = ld7;
+				ld7			:	Present_state = reset_state;
 				ldi3			:	Present_state = ldi4;
 				/*
 				...
@@ -100,7 +101,39 @@ module ControlUnit(
 				Read <= 0; Write <= 0; ReadEn <= 0; Run <= 0; Clear;
 				AND <= 0; OR <= 0; ADD <= 0; SUB <= 0; MUL <= 0; DIV <= 0; SHR <= 0; SHL <= 0; ROR <= 0; ROL <= 0; NEG <= 0; NOT <= 0; 
 			end
-			//Write each state in a similiar fashion as seen in the tb's. Some minor adjustments may need to be made regarding assertion and deassertion
+			fetch0: begin
+				#5 PCout <= 1; MARin <= 1; IncPC <= 1; Zin = 1;
+			end
+			fetch1: begin
+				#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
+				Mdatain = 32'b00000000100000000000000001010101;
+				#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
+			end
+			fetch2: begin
+				#5 Zlowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0; 
+				#5 MDRout <= 1; IRin <= 1;	
+			end
+			ld3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Grb<=1;BAout<=1;Yin<=1;
+			end
+			ld4: begin
+				#5 Grb<=0;BAout<=0;Yin<=0;
+				#5 Cout<=1; ADD <= 1;  Zin <= 1;
+			end
+			ld5: begin
+				#5 Cout<=0; ADD <= 0;  Zin <= 0;
+				#5 Zlowout <= 1;MARin<=1;
+			end
+			ld6: begin
+				#5 Zlowout <= 0; MARin <= 0;
+				#5 ReadEn <= 1; MDRin <= 1;
+			end
+			ld7: begin
+				#5 ReadEn <= 0; MDRin <= 0;
+				#5 MDRout <= 1; Gra <= 1; Rin <= 1;
+			end
+			//Write each state in a similiar fashion as seen in the tb's. Some minor adjustments may need to be made regarding assertion and deassertion, but do it as shown above
 	end
 			
 	
