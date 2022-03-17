@@ -197,6 +197,7 @@ module ControlUnit(
 	always @(Present_state) begin
 		case(Present_state) 
 			Reset_state: begin
+				Run <= 1;
 				Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; Cout <= 0; BAout <= 0;
 				LOout <= 0; HIout <= 0; Zlowout <= 0; Zhighout <= 0; MDRout <= 0; PCout <= 0;
 				LOin <= 0; HIin <= 0; CONin <= 0; PCin <= 0; IRin <= 0; Yin <= 0; Zin <= 0; MARin <= 0; MDRin <= 0; OutPortin <= 0; InPortout <= 0; 
@@ -532,7 +533,12 @@ module ControlUnit(
 				#5 Gra<=1;Rin<=1;LOWout<=1;
 				end
 				
-			
+			nop3: begin
+				end
+				
+			halt3: begin
+				Run <= 0;
+			end
 			
 	end
 			
