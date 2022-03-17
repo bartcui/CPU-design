@@ -6,7 +6,7 @@ module ControlUnit(
 					Read, Write, ReadEn, Run, Clear,
 					AND, OR, ADD, SUB, MUL, DIV, SHR, SHL, ROR, ROL, NEG, NOT,
 	input [31:0] IR,
-	input			Clock, Reset, Stop, CON_FF, Interrupts
+	input			Clock, Reset, Stop, CON_FF, Interrupts, BranchMet
 );
 	
 	parameter	Reset_state = 7'd0, fetch0 = 7'd1, fetch1 = 7'd2, fetch2 = 7'd3,
@@ -18,7 +18,7 @@ module ControlUnit(
 					neg3 = 7'd34, neg4 = 7'd35, not3 = 7'd36, not4 = 7'd37, addi3 = 7'd38, addi4 = 7'd39, addi5 = 7'd40,
 					andi3 = 7'd41, andi4 = 7'd42, andi5 = 7'd43, ori3 = 7'd44, ori4 = 7'd45, ori5 = 7'd46,
 					brzr3 = 7'd47, brzr4 = 7'd48, brzr5 = 7'd49, brzr6 = 7'd50, brnz3 = 7'd51, brnz4 = 7'd52, brnz5 = 7'd53, brnz6 = 7'd54,
-					brnz3 = 7'd55, brnz4 = 7'd56, brnz5 = 7'd57, brnz6 = 7'd58, brnz3 = 7'd59, brnz4 = 7'd60, brnz5 = 7'd61, brnz6 = 7'd62,
+					brpl3 = 7'd55, brpl4 = 7'd56, brpl5 = 7'd57, brpl6 = 7'd58, brmi3 = 7'd59, brmi4 = 7'd60, brmi5 = 7'd61, brmi6 = 7'd62,
 					in3 = 7'd63, out3 = 7'd64, jal3 = 7'd65, jr3 = 7'd66, mflo3 = 7'd67, mfhi3 = 7'd68,
 					ld3 = 7'd69, ld4 = 7'd70, ld5 = 7'd71, ld6 = 7'd72, ld7 = 7'd73, ldi3 = 7'd74, ldi4 = 7'd75, ldi5 = 7'd76,
 					st3 = 7'd77, st4 = 7'd77, st5 = 7'd78, st6 = 7'd79, st7 = 7'd80, nop = 7'd83, halt = 7'd84;
@@ -75,102 +75,116 @@ module ControlUnit(
 				ld4			:	Present_state = ld5;
 				ld5			:	Present_state = ld6;
 				ld6			:	Present_state = ld7;
-				ld7			:	Present_state = reset_state;
+				ld7			:	Present_state = Reset_state;
 				
 				ldi3			: 	Present_state = ldi4;
 				ldi4			: 	Present_state = ldi5;
-				ldi5 			:	Present_state = reset_state;
+				ldi5 			:	Present_state = Reset_state;
 				
 				st3			: 	Present_state = st4;
 				st4			: 	Present_state = st5;
 				st5			: 	Present_state = st6;
 				st6			: 	Present_state = st7;
-				st7 			:	Present_state = reset_state;
+				st7 			:	Present_state = Reset_state;
 				
 				add3			: 	Present_state = add4;
 				add4			:	Present_state = add5;
-				add5 			:	Present_state = reset_state;
+				add5 			:	Present_state = Reset_state;
 				
 				sub3				: 	Present_state = sub4;
 				sub4				: 	Present_state = sub5;
-				sub5				:	Present_state = reset_state;
+				sub5				:	Present_state = Reset_state;
 				
 				shr3				: 	Present_state = shr4;
 				shr4				: 	Present_state = shr5;
-				shr5 				:	Present_state = reset_state;
+				shr5 				:	Present_state = Reset_state;
 			
 				shl3				: 	Present_state = shl4;
 				shl4				: 	Present_state = shl5;
-				shl5 				:	Present_state = reset_state;
+				shl5 				:	Present_state = Reset_state;
 			
 				ror3				: 	Present_state = ror4;
 				ror4				: 	Present_state = ror5;
-				ror5 				:	Present_state = reset_state;
+				ror5 				:	Present_state = Reset_state;
 			
 				rol3				: 	Present_state = rol4;
 				rol4				: 	Present_state = rol5;
-				rol5 				:	Present_state = reset_state;
+				rol5 				:	Present_state = Reset_state;
 			
 				and3				: 	Present_state = and4;
 				and4				: 	Present_state = and5;
-				and5   			:	Present_state = reset_state;
+				and5   			:	Present_state = Reset_state;
 			
 				or3				: 	Present_state = or4;
 				or4				: 	Present_state = or5;
-				or5				:	Present_state = reset_state;
+				or5				:	Present_state = Reset_state;
 			
 				addi3				: 	Present_state = addi4;
 				addi4				:	Present_state = addi5;
-				addi5 				:	Present_state = reset_state;
+				addi5 				:	Present_state = Reset_state;
 			
 				andi3				: 	Present_state = andi4;
 				andi4				: 	Present_state = andi5;
-				andi5 			:	Present_state = reset_state;
+				andi5 			:	Present_state = Reset_state;
 			
 				ori3				: 	Present_state = ori4;
 				ori4				: 	Present_state = ori5;
-				ori5 				:	Present_state = reset_state;
+				ori5 				:	Present_state = Reset_state;
 				
 				mul3				: 	Present_state = mul4;
 				mul4				: 	Present_state = mul5;
 				mul5				: 	Present_state = mul6;
-				mul6           :	Present_state = reset_state;
+				mul6           :	Present_state = Reset_state;
 			
 				div3				: 	Present_state = div4;
 				div4				: 	Present_state = div5;
 				div5				: 	Present_state = div6;
-				div6				:	Present_state = reset_state;
+				div6				:	Present_state = Reset_state;
 			
 				neg3				: 	Present_state = neg4;
-				neg4				: 	Present_state = reset_state;
+				neg4				: 	Present_state = Reset_state;
 			
 				not3				: 	Present_state = not4;
-				not4				: 	Present_state = reset_state;
+				not4				: 	Present_state = Reset_state;
 			
-				br3				: 	Present_state = br4;
-				br4				: 	Present_state = br5;
-				br5				: 	Present_state = br6;
-				br6  				:	Present_state = br7;
-				br7  				:	Present_state = reset_state;
+				brzr3				: 	Present_state = brzr4;
+				brzr4				: 	Present_state = brzr5;
+				brzr5				: 	Present_state = brzr6;
+				brzr6  			:	Present_state = Reset_state;
+				
+				brnz3				: 	Present_state = brnz4;
+				brnz4				: 	Present_state = brnz5;
+				brnz5				: 	Present_state = brnz6;
+				brnz6  			:	Present_state = Reset_state;
+				
+				brpl3				: 	Present_state = brpl4;
+				brpl4				: 	Present_state = brpl5;
+				brpl5				: 	Present_state = brpl6;
+				brpl6  			:	Present_state = Reset_state;
+				
+				brmi3				: 	Present_state = brmi4;
+				brmi4				: 	Present_state = brmi5;
+				brmi5				: 	Present_state = brmi6;
+				brmi6  			:	Present_state = Reset_state;
 			
-				jr3 				:	Present_state = reset_state;
+				jr3 				:	Present_state = Reset_state;
 				
 				jal3				: 	Present_state = jal4;
-				jal4 				:	Present_state = reset_state;
+				jal4 				:	Present_state = Reset_state;
 			
-				in3 				:	Present_state = reset_state;
+				in3 				:	Present_state = Reset_state;
 			
-				out3 				:	Present_state = reset_state;
+				out3 				:	Present_state = Reset_state;
 			
-				mfhi3 			:	Present_state = reset_state;
+				mfhi3 			:	Present_state = Reset_state;
 			
-				mflo3 			:	Present_state = reset_state;
+				mflo3 			:	Present_state = Reset_state;
 			
-				nop3 				:	Present_state = reset_state;
+				nop3 				:	Present_state = Reset_state;
 			
-				halt				:  Present_state = reset_state;
+				halt				:  Present_state = Reset_state;
 			
-				default			:	Present_state = reset_state;
+				default			:	Present_state = Reset_state;
 			endcase
 	end
 	
@@ -182,7 +196,7 @@ module ControlUnit(
 					AND, OR, ADD, SUB, MUL, DIV, SHR, SHL, ROR, ROL, NEG, NOT,*/
 	always @(Present_state) begin
 		case(Present_state) 
-			reset_state: begin
+			Reset_state: begin
 				Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; Cout <= 0; BAout <= 0;
 				LOout <= 0; HIout <= 0; Zlowout <= 0; Zhighout <= 0; MDRout <= 0; PCout <= 0;
 				LOin <= 0; HIin <= 0; CONin <= 0; PCin <= 0; IRin <= 0; Yin <= 0; Zin <= 0; MARin <= 0; MDRin <= 0; OutPortin <= 0; InPortout <= 0; 
@@ -220,7 +234,7 @@ module ControlUnit(
 			ld7: begin
 				#5 ReadEn <= 0; MDRin <= 0;
 				#5 MDRout <= 1; Gra <= 1; Rin <= 1;
-				#25 MDRout <= 0; Gra <= 0; Rin <= 0;
+				
 			end
 			
 			ldi3: begin
@@ -234,7 +248,7 @@ module ControlUnit(
 			ldi5: begin
 				#5 Cout<=0; ADD <= 0;  Zin <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
-				#25 Zlowout <= 0; Gra <= 0; Rin <= 0;
+				
 			end
 			
 			st3: begin
@@ -259,22 +273,267 @@ module ControlUnit(
 			st7: begin
 				#5 MDRin <= 0; Gra <= 0; Rout <= 0;
 				#5 Write <= 1;
-				#25 Write <= 0;
+				
 			end
 			
-			add3, sub3: begin	
+			add3: begin	
 				#5 MDRout <= 0; IRin <= 0;
-				#5 R2out <= 1; Yin <= 1;
+				#5 Grb <= 1; Yin <= 1; Rout <= 1;
 			end
-			add4, sub4: begin
-				#5 R2out <= 0; Yin <= 0;
-				#5 R4out <= 1; ADD <= 1; Zin <= 1; 
+			add4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; ADD <= 1; Zin <= 1; 
 			end
-			add5, sub5: begin
-				#5 R4out <= 0; ADD <= 0; Zin <= 0;
-				#5 Zlowout <= 1; R5in <= 1;		
-				#25 Zlowout <= 0; R5in <= 0;
+			add5: begin
+				#5 Grc <= 0; ADD <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1;	Rin <= 1;	
 			end
+			
+			sub3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			sub4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; SUB <= 1; Zin <= 1;
+			end
+			sub5: begin
+				#5 Grc <= 0; SUB <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1;	Rin <= 1;
+			end
+			
+			shr3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			shr4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; SHR <= 1; Zin <= 1;
+			end
+			shr5: begin
+				#5 Grc <= 0; SHR <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			shl3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			shl4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; SHL <= 1; Zin <= 1;
+			end
+			shl5: begin
+				#5 Grc <= 0; SHL <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			ror3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			ror4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; ROTR <= 1; Zin <= 1;
+			end
+			ror5: begin
+				#5 Grc <= 0; ROTR <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			rol3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			rol4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; ROTL <= 1; Zin <= 1;
+			end
+			rol5: begin
+				#5 Grc <= 0; ROTL <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			and3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			and4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; AND <= 1; Zin <= 1;
+			end
+			and5: begin
+				#5 Grc <= 0; AND <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			or3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1;Rout <= 1;
+			end
+			or4: begin
+				#5 Grb <= 0; Yin <= 0; Rout <= 0;
+				#5 Grc <= 1; OR <= 1; Zin <= 1;
+			end
+			or5: begin
+				#5 Grc <= 0; OR <= 0; Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			addi3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Grb<=1;Rout<=1;Yin<=1;
+			end
+
+			addi4: begin
+				#5 Grb<=0;Rout<=0;Yin<=0;
+				#5 Cout<=1; ADD <= 1;  Zin <= 1;
+			end
+
+			addi5: begin
+				#5 Cout<=0; ADD <= 0;  Zin <= 0;
+				#5 Zlowout <= 1;Gra <= 1; Rin <= 1;
+			end
+			
+			andi3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Grb<=1;Rout<=1;Yin<=1;
+				end
+
+			andi4: begin
+				#5 Grb<=0;Rout<=0;Yin<=0;
+				#5 Cout<=1; AND <= 1;  Zin <= 1;
+				end
+
+			andi5: begin
+				#5 Cout<=0; AND <= 0;  Zin <= 0;
+				#5 Zlowout <= 1;Gra <= 1; Rin <= 1;
+				end
+			
+			ori3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Grb<=1;Rout<=1;Yin<=1;
+			end
+
+			ori4: begin
+				#5 Grb<=0;Rout<=0;Yin<=0;
+				#5 Cout<=1;OR <= 1;Zin <= 1;
+				end
+
+			ori5: begin
+				#5 Cout<=0; OR <= 0;  Zin <= 0;
+				#5 Zlowout <= 1;Gra <= 1; Rin <= 1;
+				end
+				
+			mul3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1; Rout<=1;
+			end
+			mul4: begin
+				#5 Grb <= 0; Yin <= 0; Rout<=0;
+				#5 Grc <= 1; MUL <= 1; Zin <= 1;
+			end
+			mul5: begin
+				#5 Grc <= 0; MUL <= 0; Zin <= 0;
+				#5 Zlowout <= 1; LOin <= 1;
+			end
+			mul6: begin
+				#5 Zlowout <= 0; LOin <= 0;
+				#5 Zhiout <= 1; HIin <= 1;
+			end
+			
+			div3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; Yin <= 1; Rout<=1;
+			end
+			div4: begin
+				#5 Grb <= 0; Yin <= 0; Rout<=0;
+				#5 Grc <= 1; DIV <= 1; Zin <= 1; Rout<=1;
+			end
+			div5: begin
+				#5 Grc <= 0; DIV <= 0; Zin <= 0; Rout<=0;
+				#5 Zlowout <= 1; LOin <= 1;
+			end
+			div6: begin
+				#5 Zlowout <= 0; LOin <= 0;
+				#5 Zhiout <= 1; HIin <= 1;
+			end
+			
+			neg3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; NEG <= 1; Zin <= 1; Rout <= 1; 
+			end
+			neg4: begin
+				#5 Grb <= 0; NEG <= 0; Zin <= 0; Rout <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			not3: begin
+				#5 MDRout <= 0; IRin <= 0;
+				#5 Grb <= 1; NOT <= 1; Zin <= 1; Rout <= 1; 
+			end
+			not4: begin
+				#5 Grb <= 0; NOT <= 0; Zin <= 0; Rout <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+			end
+			
+			brzr3, brnz3, brpl3, brmi3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Gra<=1;Rout<=1;CONIn<=1;
+			end
+
+			brzr4, brnz4, brpl4, brmi4: begin
+				#5 Gra<=0;Rout<=0;CONIn<=0;
+				#5 PCout <=1; Yin <=1;
+				end
+
+			brzr5, brnz5, brpl5, brmi5: begin
+				#5 PCout <=0; Yin <=0;
+				#5 Cout<=1; ADD <= 1;  Zin <= 1;
+				end
+
+			brzr6, brnz6, brpl6, brmi6: begin
+				#5 Cout<=0; ADD <= 0;  Zin <= 0;
+				#5 Zlowout <= 1;PCin <= BranchMet; 
+				end
+					
+			jr3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Gra<=1;Rout<=1;PCin<=1;
+			end
+			
+			jal3: begin
+				#5 MDRout <= 0; IRin <= 0; IncPC <= 0;
+				#5 Grb <= 1; Rin <= 1; PCout <= 1;
+				end
+
+			jal4: begin	
+				#5 Grb <= 0; Rin <= 0; PCout <= 0;
+				#5 Gra<=1;Rout<=1;PCin<=1;
+				end
+				
+			in3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Gra<=1;Rin<=1;InPortout<=1;
+			end
+			
+			out3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Gra<=1;Rout<=1;OutPortin<=1;
+			end
+			
+			mfhi3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Gra<=1;Rin<=1;HIout<=1;
+			end
+			
+			mflo3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Gra<=1;Rin<=1;LOWout<=1;
+				end
+				
+			
+			
 	end
 			
 	
