@@ -70,19 +70,107 @@ module ControlUnit(
 											5'b11010	:	Present_state = halt;
 										endcase
 									end
-				//Keep going with case statements for each operation statements
+				
 				ld3			:	Present_state = ld4;
 				ld4			:	Present_state = ld5;
 				ld5			:	Present_state = ld6;
 				ld6			:	Present_state = ld7;
 				ld7			:	Present_state = reset_state;
-				ldi3			:	Present_state = ldi4;
-				/*
-				...
-				...
-				...
-				*/
-				default		:	Present_state = reset_state;
+				
+				ldi3			: 	Present_state = ldi4;
+				ldi4			: 	Present_state = ldi5;
+				ldi5 			:	Present_state = reset_state;
+				
+				st3			: 	Present_state = st4;
+				st4			: 	Present_state = st5;
+				st5			: 	Present_state = st6;
+				st6			: 	Present_state = st7;
+				st7 			:	Present_state = reset_state;
+				
+				add3			: 	Present_state = add4;
+				add4			:	Present_state = add5;
+				add5 			:	Present_state = reset_state;
+				
+				sub3				: 	Present_state = sub4;
+				sub4				: 	Present_state = sub5;
+				sub5				:	Present_state = reset_state;
+				
+				shr3				: 	Present_state = shr4;
+				shr4				: 	Present_state = shr5;
+				shr5 				:	Present_state = reset_state;
+			
+				shl3				: 	Present_state = shl4;
+				shl4				: 	Present_state = shl5;
+				shl5 				:	Present_state = reset_state;
+			
+				ror3				: 	Present_state = ror4;
+				ror4				: 	Present_state = ror5;
+				ror5 				:	Present_state = reset_state;
+			
+				rol3				: 	Present_state = rol4;
+				rol4				: 	Present_state = rol5;
+				rol5 				:	Present_state = reset_state;
+			
+				and3				: 	Present_state = and4;
+				and4				: 	Present_state = and5;
+				and5   			:	Present_state = reset_state;
+			
+				or3				: 	Present_state = or4;
+				or4				: 	Present_state = or5;
+				or5				:	Present_state = reset_state;
+			
+				addi3				: 	Present_state = addi4;
+				addi4				:	Present_state = addi5;
+				addi5 				:	Present_state = reset_state;
+			
+				andi3				: 	Present_state = andi4;
+				andi4				: 	Present_state = andi5;
+				andi5 			:	Present_state = reset_state;
+			
+				ori3				: 	Present_state = ori4;
+				ori4				: 	Present_state = ori5;
+				ori5 				:	Present_state = reset_state;
+				
+				mul3				: 	Present_state = mul4;
+				mul4				: 	Present_state = mul5;
+				mul5				: 	Present_state = mul6;
+				mul6           :	Present_state = reset_state;
+			
+				div3				: 	Present_state = div4;
+				div4				: 	Present_state = div5;
+				div5				: 	Present_state = div6;
+				div6				:	Present_state = reset_state;
+			
+				neg3				: 	Present_state = neg4;
+				neg4				: 	Present_state = reset_state;
+			
+				not3				: 	Present_state = not4;
+				not4				: 	Present_state = reset_state;
+			
+				br3				: 	Present_state = br4;
+				br4				: 	Present_state = br5;
+				br5				: 	Present_state = br6;
+				br6  				:	Present_state = br7;
+				br7  				:	Present_state = reset_state;
+			
+				jr3 				:	Present_state = reset_state;
+				
+				jal3				: 	Present_state = jal4;
+				jal4 				:	Present_state = reset_state;
+			
+				in3 				:	Present_state = reset_state;
+			
+				out3 				:	Present_state = reset_state;
+			
+				mfhi3 			:	Present_state = reset_state;
+			
+				mflo3 			:	Present_state = reset_state;
+			
+				nop3 				:	Present_state = reset_state;
+			
+				halt				:  Present_state = reset_state;
+			
+				default			:	Present_state = reset_state;
 			endcase
 	end
 	
@@ -132,8 +220,61 @@ module ControlUnit(
 			ld7: begin
 				#5 ReadEn <= 0; MDRin <= 0;
 				#5 MDRout <= 1; Gra <= 1; Rin <= 1;
+				#25 MDRout <= 0; Gra <= 0; Rin <= 0;
 			end
-			//Write each state in a similiar fashion as seen in the tb's. Some minor adjustments may need to be made regarding assertion and deassertion, but do it as shown above
+			
+			ldi3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Grb<=1;BAout<=1;Yin<=1;
+			end
+			ldi4: begin
+				#5 Grb<=0;BAout<=0;Yin<=0;
+				#5 Cout<=1; ADD <= 1;  Zin <= 1;
+			end
+			ldi5: begin
+				#5 Cout<=0; ADD <= 0;  Zin <= 0;
+				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
+				#25 Zlowout <= 0; Gra <= 0; Rin <= 0;
+			end
+			
+			st3: begin
+				#5 MDRout <= 0; IRin <= 0;			
+				#5 Grb<=1;BAout<=1;Yin<=1;
+			end
+
+			st4: begin
+				#5 Grb<=0;BAout<=0;Yin<=0;
+				#5 Cout<=1; ADD <= 1;  Zin <= 1;
+			end
+
+			st5: begin
+				#5 Cout<=0; ADD <= 0;  Zin <= 0;
+				#5 Zlowout <= 1;MARin<=1;
+			end
+
+			st6: begin
+				#5 Zlowout <= 0; MARin <= 0;
+				#5 MDRin <= 1; Gra <= 1; Rout <= 1;
+			end
+			st7: begin
+				#5 MDRin <= 0; Gra <= 0; Rout <= 0;
+				#5 Write <= 1;
+				#25 Write <= 0;
+			end
+			
+			add3, sub3: begin	
+				#5 MDRout <= 0; IRin <= 0;
+				#5 R2out <= 1; Yin <= 1;
+			end
+			add4, sub4: begin
+				#5 R2out <= 0; Yin <= 0;
+				#5 R4out <= 1; ADD <= 1; Zin <= 1; 
+			end
+			add5, sub5: begin
+				#5 R4out <= 0; ADD <= 0; Zin <= 0;
+				#5 Zlowout <= 1; R5in <= 1;		
+				#25 Zlowout <= 0; R5in <= 0;
+			end
 	end
 			
 	
