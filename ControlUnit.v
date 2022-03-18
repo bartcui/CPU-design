@@ -1,9 +1,9 @@
 `timescale 1ns/10ps
 module ControlUnit(
-	output reg	Gra, Grb, Grc, Rin, Rout, Cout, BAout
+	output reg	Gra, Grb, Grc, Rin, Rout, Cout, BAout,
 					LOout, HIout, Zlowout, Zhighout, MDRout, PCout, 
 					LOin, HIin, CONin, PCin, IRin, Yin, Zin, MARin, MDRin, OutPortin, InPortout,
-					Read, Write, ReadEn, Run, Clear,
+					IncPC, Read, Write, ReadEn, Run, Clear,
 					AND, OR, ADD, SUB, MUL, DIV, SHR, SHL, ROR, ROL, NEG, NOT,
 	input [31:0] IR,
 	input			Clock, Reset, Stop, CON_FF, Interrupts, BranchMet
@@ -19,7 +19,7 @@ module ControlUnit(
 					andi3 = 7'd41, andi4 = 7'd42, andi5 = 7'd43, ori3 = 7'd44, ori4 = 7'd45, ori5 = 7'd46,
 					brzr3 = 7'd47, brzr4 = 7'd48, brzr5 = 7'd49, brzr6 = 7'd50, brnz3 = 7'd51, brnz4 = 7'd52, brnz5 = 7'd53, brnz6 = 7'd54,
 					brpl3 = 7'd55, brpl4 = 7'd56, brpl5 = 7'd57, brpl6 = 7'd58, brmi3 = 7'd59, brmi4 = 7'd60, brmi5 = 7'd61, brmi6 = 7'd62,
-					in3 = 7'd63, out3 = 7'd64, jal3 = 7'd65, jr3 = 7'd66, mflo3 = 7'd67, mfhi3 = 7'd68,
+					in3 = 7'd63, out3 = 7'd64, jal3 = 7'd65, jal4 = 7'd85, jr3 = 7'd66, mflo3 = 7'd67, mfhi3 = 7'd68,
 					ld3 = 7'd69, ld4 = 7'd70, ld5 = 7'd71, ld6 = 7'd72, ld7 = 7'd73, ldi3 = 7'd74, ldi4 = 7'd75, ldi5 = 7'd76,
 					st3 = 7'd77, st4 = 7'd77, st5 = 7'd78, st6 = 7'd79, st7 = 7'd80, nop = 7'd83, halt = 7'd84;
 	
@@ -180,7 +180,7 @@ module ControlUnit(
 			
 				mflo3 			:	Present_state = Reset_state;
 			
-				nop3 				:	Present_state = Reset_state;
+				nop 				:	Present_state = Reset_state;
 			
 				halt				:  Present_state = Reset_state;
 			
@@ -201,7 +201,7 @@ module ControlUnit(
 				Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; Cout <= 0; BAout <= 0;
 				LOout <= 0; HIout <= 0; Zlowout <= 0; Zhighout <= 0; MDRout <= 0; PCout <= 0;
 				LOin <= 0; HIin <= 0; CONin <= 0; PCin <= 0; IRin <= 0; Yin <= 0; Zin <= 0; MARin <= 0; MDRin <= 0; OutPortin <= 0; InPortout <= 0; 
-				Read <= 0; Write <= 0; ReadEn <= 0; Run <= 0; Clear;
+				Read <= 0; Write <= 0; ReadEn <= 0; Run <= 0; Clear <= 0;
 				AND <= 0; OR <= 0; ADD <= 0; SUB <= 0; MUL <= 0; DIV <= 0; SHR <= 0; SHL <= 0; ROR <= 0; ROL <= 0; NEG <= 0; NOT <= 0; 
 			end
 			fetch0: begin
@@ -209,11 +209,10 @@ module ControlUnit(
 			end
 			fetch1: begin
 				#5 PCout <= 0; MARin <= 0; IncPC <= 0; Zin = 0;  
-				Mdatain = 32'b00000000100000000000000001010101;
-				#5 Zlowout <= 1; PCin <= 1; Read <= 1; MDRin <= 1;
+				#5 Zlowout <= 1; ReadEn <= 1; MDRin <= 1;
 			end
 			fetch2: begin
-				#5 Zlowout <= 0; PCin <= 0; Read <= 0; MDRin <= 0; 
+				#5 Zlowout <= 0; ReadEn <= 0; MDRin <= 0; 
 				#5 MDRout <= 1; IRin <= 1;	
 			end
 			ld3: begin
@@ -283,10 +282,10 @@ module ControlUnit(
 			end
 			add4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; ADD <= 1; Zin <= 1; 
+				#5 Grc <= 1; ADD <= 1; Zin <= 1; Rout <= 1;
 			end
 			add5: begin
-				#5 Grc <= 0; ADD <= 0; Zin <= 0;
+				#5 Grc <= 0; ADD <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1;	Rin <= 1;	
 			end
 			
@@ -296,10 +295,10 @@ module ControlUnit(
 			end
 			sub4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; SUB <= 1; Zin <= 1;
+				#5 Grc <= 1; SUB <= 1; Zin <= 1; Rout <= 1;
 			end
 			sub5: begin
-				#5 Grc <= 0; SUB <= 0; Zin <= 0;
+				#5 Grc <= 0; SUB <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1;	Rin <= 1;
 			end
 			
@@ -309,10 +308,10 @@ module ControlUnit(
 			end
 			shr4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; SHR <= 1; Zin <= 1;
+				#5 Grc <= 1; SHR <= 1; Zin <= 1; Rout <= 1;
 			end
 			shr5: begin
-				#5 Grc <= 0; SHR <= 0; Zin <= 0;
+				#5 Grc <= 0; SHR <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
 			end
 			
@@ -322,10 +321,10 @@ module ControlUnit(
 			end
 			shl4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; SHL <= 1; Zin <= 1;
+				#5 Grc <= 1; SHL <= 1; Zin <= 1; Rout <= 1;
 			end
 			shl5: begin
-				#5 Grc <= 0; SHL <= 0; Zin <= 0;
+				#5 Grc <= 0; SHL <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
 			end
 			
@@ -335,10 +334,10 @@ module ControlUnit(
 			end
 			ror4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; ROTR <= 1; Zin <= 1;
+				#5 Grc <= 1; ROR <= 1; Zin <= 1; Rout <= 1;
 			end
 			ror5: begin
-				#5 Grc <= 0; ROTR <= 0; Zin <= 0;
+				#5 Grc <= 0; ROR <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
 			end
 			
@@ -348,10 +347,10 @@ module ControlUnit(
 			end
 			rol4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; ROTL <= 1; Zin <= 1;
+				#5 Grc <= 1; ROL <= 1; Zin <= 1; Rout <= 1;
 			end
 			rol5: begin
-				#5 Grc <= 0; ROTL <= 0; Zin <= 0;
+				#5 Grc <= 0; ROL <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
 			end
 			
@@ -361,10 +360,10 @@ module ControlUnit(
 			end
 			and4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; AND <= 1; Zin <= 1;
+				#5 Grc <= 1; AND <= 1; Zin <= 1; Rout <= 1;
 			end
 			and5: begin
-				#5 Grc <= 0; AND <= 0; Zin <= 0;
+				#5 Grc <= 0; AND <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
 			end
 			
@@ -374,10 +373,10 @@ module ControlUnit(
 			end
 			or4: begin
 				#5 Grb <= 0; Yin <= 0; Rout <= 0;
-				#5 Grc <= 1; OR <= 1; Zin <= 1;
+				#5 Grc <= 1; OR <= 1; Zin <= 1; Rout <= 1;
 			end
 			or5: begin
-				#5 Grc <= 0; OR <= 0; Zin <= 0;
+				#5 Grc <= 0; OR <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; Gra <= 1; Rin <= 1;
 			end
 			
@@ -388,7 +387,7 @@ module ControlUnit(
 
 			addi4: begin
 				#5 Grb<=0;Rout<=0;Yin<=0;
-				#5 Cout<=1; ADD <= 1;  Zin <= 1;
+				#5 Cout<=1; ADD <= 1; Zin <= 1;
 			end
 
 			addi5: begin
@@ -432,15 +431,15 @@ module ControlUnit(
 			end
 			mul4: begin
 				#5 Grb <= 0; Yin <= 0; Rout<=0;
-				#5 Grc <= 1; MUL <= 1; Zin <= 1;
+				#5 Grc <= 1; MUL <= 1; Zin <= 1; Rout <= 1;
 			end
 			mul5: begin
-				#5 Grc <= 0; MUL <= 0; Zin <= 0;
+				#5 Grc <= 0; MUL <= 0; Zin <= 0; Rout <= 0;
 				#5 Zlowout <= 1; LOin <= 1;
 			end
 			mul6: begin
 				#5 Zlowout <= 0; LOin <= 0;
-				#5 Zhiout <= 1; HIin <= 1;
+				#5 Zhighout <= 1; HIin <= 1;
 			end
 			
 			div3: begin
@@ -457,7 +456,7 @@ module ControlUnit(
 			end
 			div6: begin
 				#5 Zlowout <= 0; LOin <= 0;
-				#5 Zhiout <= 1; HIin <= 1;
+				#5 Zhighout <= 1; HIin <= 1;
 			end
 			
 			neg3: begin
@@ -480,11 +479,11 @@ module ControlUnit(
 			
 			brzr3, brnz3, brpl3, brmi3: begin
 				#5 MDRout <= 0; IRin <= 0;			
-				#5 Gra<=1;Rout<=1;CONIn<=1;
+				#5 Gra<=1;Rout<=1;CONin<=1;
 			end
 
 			brzr4, brnz4, brpl4, brmi4: begin
-				#5 Gra<=0;Rout<=0;CONIn<=0;
+				#5 Gra<=0;Rout<=0;CONin<=0;
 				#5 PCout <=1; Yin <=1;
 				end
 
@@ -530,16 +529,16 @@ module ControlUnit(
 			
 			mflo3: begin
 				#5 MDRout <= 0; IRin <= 0;			
-				#5 Gra<=1;Rin<=1;LOWout<=1;
+				#5 Gra<=1;Rin<=1;LOout<=1;
 				end
 				
-			nop3: begin
+			nop: begin
 				end
 				
-			halt3: begin
+			halt: begin
 				Run <= 0;
 			end
-			
+		endcase	
 	end
 			
 	
