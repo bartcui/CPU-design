@@ -1,4 +1,4 @@
-`timescale 1ns/10ps
+`timescale 1ns/100ps
 module CONFF_Logic(
 	output reg conditionMet,
 	input [31:0] busOut,
@@ -6,6 +6,8 @@ module CONFF_Logic(
 	input CONin
 );
 	reg busNor, D;
+	
+	initial conditionMet = 0;
 	
 	integer i;
 	
@@ -25,6 +27,8 @@ module CONFF_Logic(
 			D = 1;
 		else if(C2 == 4'b0011 && busOut[31])
 			D = 1;
+		else
+			D = 0;
 	end
 
 	always @(posedge CONin)

@@ -1,16 +1,16 @@
 //Set this file as top level entity
-`timescale 1ns/10ps
+`timescale 1ns/100ps
 module Datapath_P3(
 	output PCout, Zhighout, Zlowout, MDRout, HIout, LOout, InPortout,
    output MARin, Zin, PCin, MDRin, IRin, Yin, HIin, LOin, OutPortin,   
-   output IncPC, Read, Write, ReadIn,
-	output Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONIn, Strobe,
+   output IncPC, Read, Write, ReadEn,
+	output Gra, Grb, Grc, Rin, Rout, BAout, Cout, CONin, Strobe,
 	input Clock,
 	output Clear, 	
    input [31:0] Mdatain,
 	input [31:0] InputDev,
 	output AND, OR, ADD, SUB, MUL, DIV, SHR, SHL, ROR, ROL, NEG, NOT,
-	input Run, Stop, CON_FF, Interrupts
+	input Stop, CON_FF, Interrupts
 );
 	
 	wire [15:0] RegIn, RegOut;
@@ -42,7 +42,7 @@ module Datapath_P3(
 	
 	RAMP3 ram(MAR[8:0], Clock, MDRo, Write, RAMout);
 	
-	CONFF_Logic CONFF(BranchMet, busOut, IR[22:19], CONIn);
+	CONFF_Logic CONFF(BranchMet, busOut, IR[22:19], CONin);
 	
 	InPort IP(InPorto, InputDev, Clear, Clock, Strobe);
 	
@@ -89,7 +89,7 @@ module Datapath_P3(
 	genReg ZLoff(ZLo, Z[31:0], Zin, Clear, Clock);
 	genReg Yff(Y, busOut, Yin, Clear, Clock);
 	MARReg MARff(MAR, busOut, MARin, Clear, Clock);
-	MDR MDRreg(MDRo, busOut, Mdatain, RAMout, MDRin, Clock, Clear, Read, ReadIn);
+	MDR MDRreg(MDRo, busOut, Mdatain, RAMout, MDRin, Clock, Clear, Read, ReadEn);
 	genReg HIff(HI, busOut, HIin, Clear, Clock);
 	genReg LOff(LO, busOut, LOin, Clear, Clock);
 	genReg Cff(C_sign_extended, C_sign, 1, Clear, Clock);
@@ -141,7 +141,7 @@ module Datapath_P3(
 	ControlUnit CONTROL(Gra, Grb, Grc, Rin, Rout, Cout, BAout,
 								LOout, HIout, Zlowout, Zhighout, MDRout, PCout, 
 								LOin, HIin, CONin, PCin, IRin, Yin, Zin, MARin, MDRin, OutPortin, InPortout,
-								IncPC, Read, Write, ReadEn, Run, Clear,
+								IncPC, Read, Write, ReadEn, Clear,
 								AND, OR, ADD, SUB, MUL, DIV, SHR, SHL, ROR, ROL, NEG, NOT,
 								IR, Clock, Reset, Stop, CON_FF, Interrupts, BranchMet);
 	

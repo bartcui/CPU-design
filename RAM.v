@@ -9,6 +9,10 @@ module RAM
 
 	// Declare the RAM variable
 	reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
+	
+	initial begin
+		$readmemh("InitMem.mif", ram);
+	end
 
 	// Variable to hold the registered read address
 	reg [ADDR_WIDTH-1:0] addr_reg;

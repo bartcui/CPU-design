@@ -1,4 +1,4 @@
-`timescale 1ns/10ps
+`timescale 1ns/100ps
 module MDR(
 	output reg [31:0] MDRout,
 	input [31:0] busMuxOut, mDataIn, FromRAM,
