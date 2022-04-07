@@ -21,11 +21,11 @@ module CONFF_Logic(
 		
 		if(C2 == 4'b0000 && busNor)
 			D = 1;
-		else if(C2 == 4'b0001 && !busNor)
+		else if(C2 == 4'b0100 && !busNor)
 			D = 1;
-		else if(C2 == 4'b0010 && !busOut[31])
+		else if(C2 == 4'b1000 && !busOut[31])
 			D = 1;
-		else if(C2 == 4'b0011 && busOut[31])
+		else if(C2 == 4'b1100 && busOut[31])
 			D = 1;
 		else
 			D = 0;
