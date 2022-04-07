@@ -1,4 +1,4 @@
-`timescale 1ns/100ps
+`timescale 1ns/10ps
 module MARReg(
 	output reg [31:0] Q,
 	input [31:0] D,

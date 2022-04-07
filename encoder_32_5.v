@@ -1,4 +1,4 @@
-`timescale 1ns/100ps
+`timescale 1ns/10ps
 module encoder_32_5(
 	output reg [4:0] s,
 	input wire [31:0] in

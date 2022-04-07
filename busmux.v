@@ -1,4 +1,4 @@
-`timescale 1ns/100ps
+`timescale 1ns/10ps
 module busmux(
 	output reg [31:0] out,
 	input wire [4:0] s,

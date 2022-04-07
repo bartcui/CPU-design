@@ -1,12 +1,12 @@
-`timescale 1ns/100ps
+`timescale 1ns/10ps
 module ControlUnit(
 	output reg	Gra, Grb, Grc, Rin, Rout, Cout, BAout,
 					LOout, HIout, Zlowout, Zhighout, MDRout, PCout, 
 					LOin, HIin, CONin, PCin, IRin, Yin, Zin, MARin, MDRin, OutPortin, InPortout,
-					IncPC, Read, Write, ReadEn, Clear,
+					IncPC, Read, Write, ReadEn, Strobe, Run,
 					AND, OR, ADD, SUB, MUL, DIV, SHR, SHL, ROR, ROL, NEG, NOT,
 	input [31:0] IR,
-	input			Clock, Reset, Stop, CON_FF, Interrupts, BranchMet
+	input			Clock, Clear, Reset, Stop, CON_FF, Interrupts, BranchMet
 );
 	
 	parameter	Reset_state = 7'd0, fetch0 = 7'd1, fetch1 = 7'd2, fetch2 = 7'd3,
@@ -25,12 +25,11 @@ module ControlUnit(
 	
 	reg	[6:0] Present_state = Reset_state;
 	
-	reg Run;
-	initial Run <= 1;
-	
 	always @(posedge Clock, posedge Reset)	begin
 		#1
 		if (Reset == 1'b1) Present_state = Reset_state;
+		else if(Stop == 1)
+			Present_state = halt;
 		else if(Run == 1)
 			case(Present_state)
 				Reset_state	:	Present_state = fetch0;
@@ -199,11 +198,12 @@ module ControlUnit(
 	always @(Present_state) begin
 		case(Present_state) 
 			Reset_state: begin
+				#2
 				Run <= 1;
 				Gra <= 0; Grb <= 0; Grc <= 0; Rin <= 0; Rout <= 0; Cout <= 0; BAout <= 0;
 				LOout <= 0; HIout <= 0; Zlowout <= 0; Zhighout <= 0; MDRout <= 0; PCout <= 0;
 				LOin <= 0; HIin <= 0; CONin <= 0; PCin <= 0; IRin <= 0; Yin <= 0; Zin <= 0; MARin <= 0; MDRin <= 0; OutPortin <= 0; InPortout <= 0; 
-				Read <= 0; Write <= 0; ReadEn <= 0; Clear <= 0;
+				Read <= 0; Write <= 0; ReadEn <= 0; Strobe <= 0;
 				AND <= 0; OR <= 0; ADD <= 0; SUB <= 0; MUL <= 0; DIV <= 0; SHR <= 0; SHL <= 0; ROR <= 0; ROL <= 0; NEG <= 0; NOT <= 0; 
 			end
 			fetch0: begin
